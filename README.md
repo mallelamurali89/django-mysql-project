@@ -7,13 +7,14 @@ Follow these steps to set up the project locally:
 1. Clone the Repository
 
     git clone https://github.com/mallelamurali89/Social_Networking_Application.git
+
     cd Social_Networking_Application
 
 2. Create a Virtual Environment
 
     Create a virtual environment to isolate project dependencies:
 
-    python -m venv venv
+        python -m venv venv
 
 Activate the virtual environment:
 
@@ -31,7 +32,7 @@ Go to Project folder
 
     Install the required packages using pip:
 
-    pip install -r requirements.txt
+        pip install -r requirements.txt
 
 4. Configure Database
 
@@ -50,20 +51,21 @@ Go to Project folder
 
     Apply the database migrations to create the necessary tables:
 
-    python manage.py makemigrations
-    python manage.py migrate
+        python manage.py makemigrations
+
+        python manage.py migrate
 
 6. Create a Superuser (Admin User) (Optional)
 
     Create a superuser account to access the Django admin panel:
 
-    python manage.py createsuperuser
+        python manage.py createsuperuser
 
 7. Run the Development Server
 
     Start the Django development server:
 
-    python manage.py runserver
+        python manage.py runserver
 
 Your project should now be running locally at http://localhost:8000/api/signup/.
 
