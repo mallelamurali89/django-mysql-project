@@ -1,0 +1,20 @@
+version: '3'
+services:
+  # Django application
+  web:
+    image: sna-app-image
+    container_name: drf-api
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./sna_project:/app  # Adjust the path to your Django project
+    environment:
+      - DJANGO_DB_ENGINE=django.db.backends.sqlite3
+      - DJANGO_DB_NAME=/app/db.sqlite3
+      - DJANGO_SECRET_KEY=your_secret_key  # Change this to a secure secret key
+    networks:
+      - drf-network
+      
+networks:
+  drf-network:
