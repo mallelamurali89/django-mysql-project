@@ -11,6 +11,37 @@ from .models import FriendRequest
 from rest_framework.throttling import UserRateThrottle
 
 class UserSignupView(APIView):
+    """
+    API endpoint for user registration.
+
+    This view allows users to register by providing their information via a POST request.
+    
+    Request:
+    - HTTP Method: POST
+    - Data Parameters (in JSON format):
+        - username (str): The desired username for the new user.
+        - email (str): The email address of the new user.
+        - password (str): The password for the new user.
+    
+    Response:
+    - HTTP 201 Created: If the registration is successful.
+        Returns a JSON response with a success message.
+    - HTTP 400 Bad Request: If the provided data is invalid or there are errors.
+        Returns a JSON response with details of the validation errors.
+
+    Example Usage:
+    ```
+    POST /api/signup/
+    {
+        "username": "new_user",
+        "email": "new_user@example.com",
+        "password": "secure_password"
+    }
+    ```
+    Note:
+    - Make sure to include the 'Content-Type: application/json' header in your request.
+    - Passwords should be securely hashed before saving in database.
+    """
     def post(self, request):
         serializer = UserSignupSerializer(data=request.data)
         if serializer.is_valid():
@@ -49,45 +80,60 @@ class FriendRequestCreateView(APIView):
     throttle_classes = [UserRateThrottle]
     permission_classes = (IsAuthenticated,)
     def post(self, request):
-        sender = request.user
-        recipient_id = request.data.get('receiver')
-        recipient_id = User.objects.get(pk=recipient_id)
+        try:
+            sender = request.user
+            recipient_id = request.data.get('receiver')
+            recipient_id = User.objects.get(pk=recipient_id)
 
-        # Check if a friend request from the sender to the recipient already exists
-        if FriendRequest.objects.filter(sender=sender, receiver=recipient_id, status='Pending').exists():
-            return Response({'detail': 'Friend request already sent.'}, status=status.HTTP_400_BAD_REQUEST)
+            # Check if a friend request from the sender to the recipient already exists
+            if FriendRequest.objects.filter(sender=sender, receiver=recipient_id, status='Pending').exists():
+                return Response({'detail': 'Friend request already sent.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create a new friend request
-        friend_request = FriendRequest(sender=sender, receiver=recipient_id, status='Pending')
-        friend_request.save()
-        serializer = FriendRequestSerializer(friend_request)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Create a new friend request
+            friend_request = FriendRequest(sender=sender, receiver=recipient_id, status='Pending')
+            friend_request.save()
+            serializer = FriendRequestSerializer(friend_request)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Http404:
+            return Response({'success':'false','message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+                return Response({'success':'false','message': 'An error occurred. Please try again later.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class FriendRequestAcceptView(APIView):
     permission_classes = (IsAuthenticated,)
     def post(self, request, request_id):
-        friend_request = FriendRequest.objects.get(pk=request_id)
+        try:
+            friend_request = FriendRequest.objects.get(pk=request_id)
 
-        if request.user != friend_request.receiver:
-            return Response({'detail': 'You do not have permission to accept this friend request.'}, status=status.HTTP_403_FORBIDDEN)
+            if request.user != friend_request.receiver:
+                return Response({'detail': 'You do not have permission to accept this friend request.'}, status=status.HTTP_403_FORBIDDEN)
 
-        friend_request.status = 'Accepted'
-        friend_request.save()
-        serializer = FriendRequestSerializer(friend_request)
-        return Response(serializer.data)
+            friend_request.status = 'Accepted'
+            friend_request.save()
+            serializer = FriendRequestSerializer(friend_request)
+            return Response(serializer.data)
+        except Http404:
+            return Response({'success':'false','message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'success':'false','message': 'An error occurred. Please try again later.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class FriendRequestRejectView(APIView):
     permission_classes = (IsAuthenticated,)
     def post(self, request, request_id):
-        friend_request = FriendRequest.objects.get(pk=request_id)
+        try:
+            friend_request = FriendRequest.objects.get(pk=request_id)
 
-        if request.user != friend_request.receiver:
-            return Response({'detail': 'You do not have permission to reject this friend request.'}, status=status.HTTP_403_FORBIDDEN)
+            if request.user != friend_request.receiver:
+                return Response({'detail': 'You do not have permission to reject this friend request.'}, status=status.HTTP_403_FORBIDDEN)
 
-        friend_request.status = 'Rejected'
-        friend_request.save()
-        serializer = FriendRequestSerializer(friend_request)
-        return Response(serializer.data)
+            friend_request.status = 'Rejected'
+            friend_request.save()
+            serializer = FriendRequestSerializer(friend_request)
+            return Response(serializer.data)
+        except Http404:
+            return Response({'success':'false','message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'success':'false','message': 'An error occurred. Please try again later.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AcceptedFriendsView(ListAPIView):
     serializer_class = PendingRequestsSerializer
