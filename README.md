@@ -6,9 +6,9 @@ Follow these steps to set up the project locally:
 
 1. Clone the Repository
 
-    git clone https://github.com/mallelamurali89/Social_Networking_Application.git
+        git clone https://github.com/mallelamurali89/Social_Networking_Application.git
 
-    cd Social_Networking_Application
+        cd Social_Networking_Application
 
 2. Create a Virtual Environment
 
