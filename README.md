@@ -26,7 +26,7 @@ Activate the virtual environment:
 
 Go to Project folder
 
-    cd sna_app
+    cd sna_project
 
 3. Install Dependencies
 
