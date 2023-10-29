@@ -1,4 +1,4 @@
-# Social_Networking_Application
+# Django Mysql Project with Docker
 
 Installation
 
@@ -6,9 +6,9 @@ Follow these steps to set up the project locally:
 
 1. Clone the Repository
 
-        git clone https://github.com/mallelamurali89/Social_Networking_Application.git
+        git clone https://github.com/mallelamurali89/django-mysql-project.git
 
-    cd Social_Networking_Application
+    cd django-mysql-project
 
 2. Create a Virtual Environment
 
@@ -41,12 +41,13 @@ Go to Project folder
     # settings.py
 
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sna_db',
+        'USER': 'root',
+        'PASSWORD': '',
     }
-
+}
 5. Apply Migrations
 
     Apply the database migrations to create the necessary tables:
